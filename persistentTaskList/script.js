@@ -2,6 +2,7 @@ let items = []; // variable to store items in array
 
 const itemsDiv = document.getElementById("items") // show items on the div "items"
 const input = document.getElementById("itemInput")
+const storageKey = "items";
 
 function renderItems () {
     itemsDiv.innerHTML = null; // removing everything inside the div (fresh slate)
@@ -27,12 +28,15 @@ function renderItems () {
 }
 
 function loadItems(){
-
+    const oldItems = localStorage.getItem(storageKey)
+    if (oldItems) items = JSON.parse(oldItems)
+    renderItems()
 }
 
 
 function saveItems(){
-    
+    const stringItems = JSON.stringify(items); // taking list and converting to string
+    localStorage.setItem(storageKey, stringItems) 
 }
 
 function addItem(){
@@ -44,10 +48,13 @@ function addItem(){
     items.push(value) // push the value, whatever user typed into input
     renderItems() 
     input.value = "" // clear whatever user typed
+    saveItems()
 }
 
 function removeItem(idx){
     items.splice(idx, 1) // remove item at this particular index - how many? one
     renderItems()
+    saveItems()
 }
 
+document.addEventListener("DOMContentLoaded", loadItems) // loaded all the HTML onto the screen -> call the loadItems function
